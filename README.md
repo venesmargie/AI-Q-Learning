@@ -39,56 +39,58 @@ Description of Algorithms used
 
 For calculating each q-value in each trajectory’s state and action, we implemented a global
 nested q list dictionary where:
+
 qList = {“state” : {“action”: qvalue} …. }
+
 Key: state (string)
 Value: dictionary
 Key: action for that state (string = “C”, “D”, “U”, “L”, “R”)
 Value: qValue calculation for that state and action
-for state in trajectory states:
-maxValue = [0]
-qSA = 0
-q = 0
-count = 0
-reward = state’s reward
-state = current state
-action = current action
-currentSquare = element[0]
-if we are in the second to the last element: #boundary case
-nextState = next state in the trajectory
-found = check_state_action(state, action) #checks if a given state’s action is a valid move
-if (found == False):
-return 0
-nextStateAction = next state action
-currentAction = current action
-if state is in our qList: #CASE 1: if the current state is in our qlist
-if nextState in qList: #is the next state is in our q list
-maxValue = next following states q values
-q = qSA + alpha * (r + gamma*(max(maxValue)) - qSA)
-if currentAction in qList: #CASE 2: if the current action is in our qlist and next action is in
-the qList
-if nextStateAction in qList:
-maxValue = next following states q values
-qSA = get q value for the state and action
-q = qSA + alpha * (r + gamma*(max(maxValue)) - qSA)
-update_qlist(element, currentAction, q) #update the same action with new q value
 
-if currentAction not in qList[element]: #CASE 3: if current action is not in the qList, but
-next action is
-if nextStateAction in qList.keys():
-maxValue = sT1_qList(nextState, nextStateAction) #calculates next trajectories values,
-gets the max values
-q = qSA + alpha * (r + gamma*(max(maxValue)) - qSA)
-update_qlist(element, currentAction, q)
-elif ((element not in qList.keys()) and (nextStateAction in qList.keys())): #CASE 4: if current
-state is not in the list, but the next state is in the trajectory
-maxValue = sT1_qList(nextState, nextStateAction)
-q = qSA + alpha * (r + gamma*(max(maxValue)) - qSA)
-add_qlist(element, currentAction, q)
-else: #CASE 5: add a new state and action in the qList
-q = alpha * (r + max(maxValue) - 0) #since no qvalue pair yet, max value will be 0
-elementAction = data['Action'][count]
-add_qlist(element, elementAction, q)
-count+=1 #increment count to check if in the end of the list
-Q-value
-- If statement, check to see if the state and action pair are in the q-list. If not, return 0. If it
-is in the qList, return the q-value for that state and action q value
+```{
+for state in trajectory states:
+  maxValue = [0]
+  qSA = 0
+  q = 0
+  count = 0
+  reward = state’s reward
+  state = current state
+  action = current action
+  currentSquare = element[0]
+
+  if we are in the second to the last element: #boundary case
+  nextState = next state in the trajectory
+  found = check_state_action(state, action) #checks if a given state’s action is a valid move
+    if (found == False):
+    return 0
+    nextStateAction = next state action
+    currentAction = current action
+    if state is in our qList: #CASE 1: if the current state is in our qlist
+      if nextState in qList: #is the next state is in our q list
+      maxValue = next following states q values
+      q = qSA + alpha * (r + gamma*(max(maxValue)) - qSA)
+
+  if currentAction in qList: #CASE 2: if the current action is in our qlist and next action is in the qList
+    if nextStateAction in qList:
+      maxValue = next following states q values
+      qSA = get q value for the state and action
+      q = qSA + alpha * (r + gamma*(max(maxValue)) - qSA)
+      update_qlist(element, currentAction, q) #update the same action with new q value
+      
+    if currentAction not in qList[element]: #CASE 3: if current action is not in the qList, butnext action is
+      if nextStateAction in qList.keys():
+        maxValue = sT1_qList(nextState, nextStateAction) #calculates next trajectories values,
+        gets the max values
+        q = qSA + alpha * (r + gamma*(max(maxValue)) - qSA)
+        update_qlist(element, currentAction, q)
+    elif ((element not in qList.keys()) and (nextStateAction in qList.keys())): #CASE 4: if current state is not in the list, but the next state is in the trajectory
+      maxValue = sT1_qList(nextState, nextStateAction)
+      q = qSA + alpha * (r + gamma*(max(maxValue)) - qSA)
+      add_qlist(element, currentAction, q)
+    else: #CASE 5: add a new state and action in the qList
+      q = alpha * (r + max(maxValue) - 0) #since no qvalue pair yet, max value will be 0
+      elementAction = data['Action'][count]
+      add_qlist(element, elementAction, q)
+      count+=1 #increment count to check if in the end of the list
+}
+```
